@@ -3,6 +3,7 @@ import markdownSource from "./content/dolls.md?raw";
 import { parseDollsMarkdown } from "./lib/markdownProfile";
 import { buildProfileHash, parseProfileIdFromHash, resolveProfileId } from "./lib/routing";
 import { getRenderer } from "./renderers/registry";
+import { PROFILE_DESIGN_THEME } from "./themeSettings";
 
 const collection = parseDollsMarkdown(markdownSource);
 
@@ -36,7 +37,7 @@ export function App() {
   }
 
   return (
-    <div className="app-shell theme-soft-gallery">
+    <div className={`app-shell theme-soft-gallery profile-style-${PROFILE_DESIGN_THEME}`}>
       <ActiveRenderer
         onSelectProfile={handleSelectProfile}
         profiles={collection.profiles}

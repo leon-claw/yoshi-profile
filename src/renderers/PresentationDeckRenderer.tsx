@@ -16,8 +16,10 @@ import type { ProfileRendererProps } from "./types";
 type SlideDirection = "next" | "prev";
 type SlidePosition = "active" | "next" | "prev" | "far";
 const NAVIGATION_LOCK_MS = 680;
-const TRANSITION_STYLES = ["fade", "zoom", "slide", "back", "bounce", "flip"] as const;
+const EXIT_STATE_RESET_MS = 1100;
+const TRANSITION_STYLES = ["backInDown", "backInLeft", "backInRight", "backInUp"] as const;
 type TransitionStyle = (typeof TRANSITION_STYLES)[number];
+type SlideMotion = "entering" | "exiting" | "idle";
 
 type GalleryPreview = {
   profileId: string;
@@ -35,10 +37,12 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
     [profiles, selected.id],
   );
   const [direction, setDirection] = useState<SlideDirection>("next");
-  const [transitionStyle, setTransitionStyle] = useState<TransitionStyle>("fade");
+  const [transitionStyle, setTransitionStyle] = useState<TransitionStyle>("backInRight");
+  const [exitingProfileId, setExitingProfileId] = useState<string | null>(null);
   const [preview, setPreview] = useState<GalleryPreview | null>(null);
   const previousIndexRef = useRef(selectedIndex);
   const pendingNavigationRef = useRef<{ direction: SlideDirection; targetId: string } | null>(null);
+  const exitTimerRef = useRef<number | null>(null);
   const wheelLockRef = useRef(0);
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const previewProfile = useMemo(
@@ -47,6 +51,18 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
   );
   const previewImages = previewProfile?.gallery ?? [];
   const previewImage = previewImages.length && preview ? previewImages[preview.index % previewImages.length] : null;
+
+  const markExitingProfile = useCallback((profileId: string) => {
+    if (exitTimerRef.current) {
+      window.clearTimeout(exitTimerRef.current);
+    }
+
+    setExitingProfileId(profileId);
+    exitTimerRef.current = window.setTimeout(() => {
+      setExitingProfileId(null);
+      exitTimerRef.current = null;
+    }, EXIT_STATE_RESET_MS);
+  }, []);
 
   const goToIndex = useCallback(
     (targetIndex: number, nextDirection: SlideDirection) => {
@@ -57,12 +73,13 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
         return;
       }
 
+      markExitingProfile(selected.id);
       pendingNavigationRef.current = { direction: nextDirection, targetId: target.id };
       setDirection(nextDirection);
       setTransitionStyle(getNextTransitionStyle);
       onSelectProfile(target.id);
     },
-    [onSelectProfile, profiles, selected.id],
+    [markExitingProfile, onSelectProfile, profiles, selected.id],
   );
 
   const goNext = useCallback(() => goToIndex(selectedIndex + 1, "next"), [goToIndex, selectedIndex]);
@@ -111,10 +128,25 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
 
     const movedForward =
       selectedIndex > lastIndex || (lastIndex === profiles.length - 1 && selectedIndex === 0);
+    const exitingProfile = profiles[lastIndex];
+
+    if (exitingProfile) {
+      markExitingProfile(exitingProfile.id);
+    }
+
     setDirection(movedForward ? "next" : "prev");
     setTransitionStyle(getNextTransitionStyle);
     previousIndexRef.current = selectedIndex;
-  }, [profiles.length, selected.id, selectedIndex]);
+  }, [markExitingProfile, profiles, selected.id, selectedIndex]);
+
+  useEffect(
+    () => () => {
+      if (exitTimerRef.current) {
+        window.clearTimeout(exitTimerRef.current);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -242,10 +274,15 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
       <div className="deck-viewport" aria-live="polite">
         {profiles.map((profile, index) => (
           <Slide
+            index={index}
             key={profile.id}
+            motion={
+              profile.id === selected.id ? "entering" : profile.id === exitingProfileId ? "exiting" : "idle"
+            }
             position={getSlidePosition(index, selectedIndex, profiles.length)}
             profile={profile}
             selected={profile.id === selected.id}
+            total={profiles.length}
             onPreview={openPreview}
           />
         ))}
@@ -328,20 +365,26 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
 }
 
 type SlideProps = {
+  index: number;
+  motion: SlideMotion;
   position: SlidePosition;
   onPreview: (profileId: string, index: number) => void;
   profile: ProfileRendererProps["selected"];
   selected: boolean;
+  total: number;
 };
 
-function Slide({ position, onPreview, profile, selected }: SlideProps) {
+function Slide({ index, motion, position, onPreview, profile, selected, total }: SlideProps) {
   const featuredSection = profile.sections[0];
+  const slideNumber = String(index + 1).padStart(2, "0");
+  const totalNumber = String(total).padStart(2, "0");
 
   return (
     <section
       aria-hidden={!selected}
       aria-labelledby={`deck-slide-title-${profile.id}`}
       className="deck-slide"
+      data-motion={motion}
       data-position={position}
       style={
         {
@@ -351,8 +394,15 @@ function Slide({ position, onPreview, profile, selected }: SlideProps) {
       }
     >
       <div className="slide-bg-grid" aria-hidden="true" />
+      <div className="slide-paper-grain" aria-hidden="true" />
       <div className="slide-inner">
         <div className="slide-copy">
+          <div className="slide-kicker">
+            <span>Yoshi Profile</span>
+            <span>
+              {slideNumber} / {totalNumber}
+            </span>
+          </div>
           <h1 id={`deck-slide-title-${profile.id}`}>{profile.name}</h1>
           <p className="slide-subtitle">{profile.displayName}</p>
 
@@ -383,20 +433,27 @@ function Slide({ position, onPreview, profile, selected }: SlideProps) {
 
         <div className="slide-visual">
           <div className="image-stage">
+            <span className="image-stage__mat" aria-hidden="true" />
             <DollImage image={profile.heroImage} label={profile.name} loading={selected ? "eager" : "lazy"} />
+            <span className="image-stage__caption" aria-hidden="true">
+              No. {slideNumber}
+            </span>
           </div>
-          <div className="deck-gallery" aria-label={`${profile.name} 相册`}>
-            {profile.gallery.slice(0, 3).map((image, galleryIndex) => (
-              <button
-                className="deck-gallery-item"
-                key={`${profile.id}-${image}-${galleryIndex}`}
-                type="button"
-                aria-label={`预览 ${profile.name} 相册 ${galleryIndex + 1}`}
-                onClick={() => onPreview(profile.id, galleryIndex)}
-              >
-                <DollImage image={image} label={`${profile.name} 相册 ${galleryIndex + 1}`} />
-              </button>
-            ))}
+          <div className="deck-gallery-shell">
+            <span className="deck-gallery-label">Gallery</span>
+            <div className="deck-gallery" aria-label={`${profile.name} 相册`}>
+              {profile.gallery.slice(0, 3).map((image, galleryIndex) => (
+                <button
+                  className="deck-gallery-item"
+                  key={`${profile.id}-${image}-${galleryIndex}`}
+                  type="button"
+                  aria-label={`预览 ${profile.name} 相册 ${galleryIndex + 1}`}
+                  onClick={() => onPreview(profile.id, galleryIndex)}
+                >
+                  <DollImage image={image} label={`${profile.name} 相册 ${galleryIndex + 1}`} />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

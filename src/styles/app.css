@@ -931,108 +931,61 @@ a {
   --deck-transition-duration: var(--profile-motion-duration);
 }
 
-.presentation-deck[data-transition="fade"] .deck-slide[data-position="active"] {
-  animation: animateFadeInRight var(--profile-motion-duration) var(--deck-ease) both;
+.deck-slide[data-motion="exiting"] {
+  z-index: 6;
+  pointer-events: none;
 }
 
-.presentation-deck[data-transition="fade"][data-direction="prev"] .deck-slide[data-position="active"] {
-  animation-name: animateFadeInLeft;
+.presentation-deck[data-transition="backInDown"] .deck-slide[data-position="active"] {
+  animation: backInDown var(--profile-motion-duration) var(--deck-ease) both;
 }
 
-.presentation-deck[data-transition="fade"] .deck-slide[data-position="prev"],
-.presentation-deck[data-transition="fade"] .deck-slide[data-position="next"] {
-  animation: animateFadeOutLeft var(--profile-motion-exit-duration) var(--deck-ease) both;
+.presentation-deck[data-transition="backInDown"] .deck-slide[data-motion="exiting"] {
+  animation: backOutDown var(--profile-motion-exit-duration) var(--deck-ease) both;
 }
 
-.presentation-deck[data-transition="fade"][data-direction="prev"] .deck-slide[data-position="prev"],
-.presentation-deck[data-transition="fade"][data-direction="prev"] .deck-slide[data-position="next"] {
-  animation-name: animateFadeOutRight;
+.presentation-deck[data-transition="backInLeft"] .deck-slide[data-position="active"] {
+  animation: backInLeft var(--profile-motion-duration) var(--deck-ease) both;
 }
 
-.presentation-deck[data-transition="zoom"] .deck-slide[data-position="active"] {
-  animation: animateZoomIn var(--profile-motion-duration) var(--deck-ease) both;
+.presentation-deck[data-transition="backInLeft"] .deck-slide[data-motion="exiting"] {
+  animation: backOutLeft var(--profile-motion-exit-duration) var(--deck-ease) both;
 }
 
-.presentation-deck[data-transition="zoom"] .deck-slide[data-position="prev"],
-.presentation-deck[data-transition="zoom"] .deck-slide[data-position="next"] {
-  animation: animateZoomOut var(--profile-motion-exit-duration) var(--deck-ease) both;
+.presentation-deck[data-transition="backInRight"] .deck-slide[data-position="active"] {
+  animation: backInRight var(--profile-motion-duration) var(--deck-ease) both;
 }
 
-.presentation-deck[data-transition="slide"] .deck-slide[data-position="active"] {
-  animation: animateSlideInUp var(--profile-motion-duration) var(--deck-ease) both;
+.presentation-deck[data-transition="backInRight"] .deck-slide[data-motion="exiting"] {
+  animation: backOutRight var(--profile-motion-exit-duration) var(--deck-ease) both;
 }
 
-.presentation-deck[data-transition="slide"][data-direction="prev"] .deck-slide[data-position="active"] {
-  animation-name: animateSlideInDown;
+.presentation-deck[data-transition="backInUp"] .deck-slide[data-position="active"] {
+  animation: backInUp var(--profile-motion-duration) var(--deck-ease) both;
 }
 
-.presentation-deck[data-transition="slide"] .deck-slide[data-position="prev"],
-.presentation-deck[data-transition="slide"] .deck-slide[data-position="next"] {
-  animation: animateSlideOutUp var(--profile-motion-exit-duration) var(--deck-ease) both;
-}
-
-.presentation-deck[data-transition="slide"][data-direction="prev"] .deck-slide[data-position="prev"],
-.presentation-deck[data-transition="slide"][data-direction="prev"] .deck-slide[data-position="next"] {
-  animation-name: animateSlideOutDown;
-}
-
-.presentation-deck[data-transition="back"] .deck-slide[data-position="active"] {
-  animation: animateBackInRight var(--profile-motion-duration) var(--deck-ease) both;
-}
-
-.presentation-deck[data-transition="back"][data-direction="prev"] .deck-slide[data-position="active"] {
-  animation-name: animateBackInLeft;
-}
-
-.presentation-deck[data-transition="back"] .deck-slide[data-position="prev"],
-.presentation-deck[data-transition="back"] .deck-slide[data-position="next"] {
-  animation: animateBackOutLeft var(--profile-motion-exit-duration) var(--deck-ease) both;
-}
-
-.presentation-deck[data-transition="back"][data-direction="prev"] .deck-slide[data-position="prev"],
-.presentation-deck[data-transition="back"][data-direction="prev"] .deck-slide[data-position="next"] {
-  animation-name: animateBackOutRight;
-}
-
-.presentation-deck[data-transition="bounce"] .deck-slide[data-position="active"] {
-  animation: animateBounceIn var(--profile-motion-duration) both;
-}
-
-.presentation-deck[data-transition="bounce"] .deck-slide[data-position="prev"],
-.presentation-deck[data-transition="bounce"] .deck-slide[data-position="next"] {
-  animation: animateBounceOut var(--profile-motion-exit-duration) both;
-}
-
-.presentation-deck[data-transition="flip"] .deck-slide[data-position="active"] {
-  animation: animateFlipInX var(--profile-motion-duration) both;
-  backface-visibility: visible;
-}
-
-.presentation-deck[data-transition="flip"] .deck-slide[data-position="prev"],
-.presentation-deck[data-transition="flip"] .deck-slide[data-position="next"] {
-  animation: animateFlipOutX var(--profile-motion-exit-duration) both;
-  backface-visibility: visible;
-}
-
-.deck-slide[data-position="active"] .slide-bg-grid {
-  animation: animateFadeIn var(--profile-motion-duration) ease var(--motion-d0) both;
+.presentation-deck[data-transition="backInUp"] .deck-slide[data-motion="exiting"] {
+  animation: backOutUp var(--profile-motion-exit-duration) var(--deck-ease) both;
 }
 
 .deck-slide[data-position="active"] .slide-copy h1 {
-  animation: animateFadeInDown var(--profile-motion-duration) var(--deck-ease) var(--motion-d1) both;
+  animation: rotateInDownLeft var(--profile-motion-duration) var(--deck-ease) var(--motion-d1) both;
+  transform-origin: left bottom;
 }
 
 .deck-slide[data-position="active"] .image-stage {
-  animation: animateZoomIn var(--profile-motion-duration) var(--deck-ease) var(--motion-d2) both;
+  animation: bounceIn var(--profile-motion-duration) both;
+  animation-delay: var(--motion-d2);
   transform-origin: center;
 }
 
 .deck-slide[data-position="active"] .slide-subtitle {
-  animation: animateFadeInUp var(--profile-motion-duration) var(--deck-ease) var(--motion-d3) both;
+  animation: flipInX var(--profile-motion-duration) var(--deck-ease) var(--motion-d3) both;
+  backface-visibility: visible;
 }
 
 .deck-slide[data-position="active"] .profile-tag {
-  animation: animateBounceIn var(--profile-motion-duration) both;
+  animation: rotateIn var(--profile-motion-duration) var(--deck-ease) both;
   transform-origin: center;
 }
 
@@ -1053,11 +1006,12 @@ a {
 }
 
 .deck-slide[data-position="active"] .deck-gallery {
-  animation: animateSlideInUp var(--profile-motion-duration) var(--deck-ease) var(--motion-d7) both;
+  animation: rotateInUpRight var(--profile-motion-duration) var(--deck-ease) var(--motion-d7) both;
+  transform-origin: right bottom;
 }
 
 .deck-slide[data-position="active"] .deck-gallery-item {
-  animation: animateBounceInUp var(--profile-motion-duration) both;
+  animation: bounceIn var(--profile-motion-duration) both;
   transform-origin: bottom center;
 }
 
@@ -1074,8 +1028,9 @@ a {
 }
 
 .deck-slide[data-position="active"] .deck-fact {
-  animation: animateFadeInUp var(--profile-motion-duration) var(--deck-ease) both;
-  transform-origin: top center;
+  animation: flipInY var(--profile-motion-duration) var(--deck-ease) both;
+  backface-visibility: visible;
+  transform-origin: center;
 }
 
 .deck-slide[data-position="active"] .deck-fact:nth-child(1) {
@@ -1099,7 +1054,8 @@ a {
 }
 
 .deck-slide[data-position="active"] .slide-story {
-  animation: animateFadeInUp var(--profile-motion-duration) var(--deck-ease) var(--motion-d12) both;
+  animation: rotateInUpLeft var(--profile-motion-duration) var(--deck-ease) var(--motion-d12) both;
+  transform-origin: left bottom;
 }
 
 @media (max-width: 860px) {
@@ -1162,167 +1118,27 @@ a {
   }
 }
 
-@keyframes animateFadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes animateFadeInDown {
-  from {
-    opacity: 0;
-    transform: translate3d(0, -34px, 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes animateFadeInUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 34px, 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes animateFadeInLeft {
-  from {
-    opacity: 0;
-    transform: translate3d(-48px, 0, 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes animateFadeInRight {
-  from {
-    opacity: 0;
-    transform: translate3d(48px, 0, 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes animateFadeOutLeft {
-  from {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    opacity: 0;
-    transform: translate3d(-48px, 0, 0);
-  }
-}
-
-@keyframes animateFadeOutRight {
-  from {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    opacity: 0;
-    transform: translate3d(48px, 0, 0);
-  }
-}
-
-@keyframes animateZoomIn {
-  from {
-    opacity: 0;
-    transform: scale3d(0.3, 0.3, 0.3);
-  }
-
-  50% {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 1;
-    transform: scale3d(1, 1, 1);
-  }
-}
-
-@keyframes animateZoomOut {
-  from {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0;
-    transform: scale3d(0.3, 0.3, 0.3);
-  }
-
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes animateSlideInUp {
-  from {
-    visibility: visible;
-    transform: translate3d(0, 100%, 0);
-  }
-
-  to {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes animateSlideInDown {
-  from {
-    visibility: visible;
-    transform: translate3d(0, -100%, 0);
-  }
-
-  to {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes animateSlideOutUp {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    visibility: hidden;
-    transform: translate3d(0, -100%, 0);
-  }
-}
-
-@keyframes animateSlideOutDown {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    visibility: hidden;
-    transform: translate3d(0, 100%, 0);
-  }
-}
-
-@keyframes animateBackInRight {
-  from {
+@keyframes backInDown {
+  0% {
     opacity: 0.7;
-    transform: translateX(1400px) scale(0.7);
+    transform: translateY(-1200px) scale(0.7);
+  }
+
+  80% {
+    opacity: 0.7;
+    transform: translateY(0) scale(0.7);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes backInLeft {
+  0% {
+    opacity: 0.7;
+    transform: translateX(-1200px) scale(0.7);
   }
 
   80% {
@@ -1330,16 +1146,16 @@ a {
     transform: translateX(0) scale(0.7);
   }
 
-  to {
+  100% {
     opacity: 1;
     transform: scale(1);
   }
 }
 
-@keyframes animateBackInLeft {
-  from {
+@keyframes backInRight {
+  0% {
     opacity: 0.7;
-    transform: translateX(-1400px) scale(0.7);
+    transform: translateX(1200px) scale(0.7);
   }
 
   80% {
@@ -1347,14 +1163,48 @@ a {
     transform: translateX(0) scale(0.7);
   }
 
-  to {
+  100% {
     opacity: 1;
     transform: scale(1);
   }
 }
 
-@keyframes animateBackOutLeft {
-  from {
+@keyframes backInUp {
+  0% {
+    opacity: 0.7;
+    transform: translateY(1200px) scale(0.7);
+  }
+
+  80% {
+    opacity: 0.7;
+    transform: translateY(0) scale(0.7);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes backOutDown {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  20% {
+    opacity: 0.7;
+    transform: translateY(0) scale(0.7);
+  }
+
+  100% {
+    opacity: 0.7;
+    transform: translateY(1200px) scale(0.7);
+  }
+}
+
+@keyframes backOutLeft {
+  0% {
     opacity: 1;
     transform: scale(1);
   }
@@ -1364,14 +1214,14 @@ a {
     transform: translateX(0) scale(0.7);
   }
 
-  to {
+  100% {
     opacity: 0.7;
-    transform: translateX(-1400px) scale(0.7);
+    transform: translateX(-1200px) scale(0.7);
   }
 }
 
-@keyframes animateBackOutRight {
-  from {
+@keyframes backOutRight {
+  0% {
     opacity: 1;
     transform: scale(1);
   }
@@ -1381,13 +1231,30 @@ a {
     transform: translateX(0) scale(0.7);
   }
 
-  to {
+  100% {
     opacity: 0.7;
-    transform: translateX(1400px) scale(0.7);
+    transform: translateX(1200px) scale(0.7);
   }
 }
 
-@keyframes animateBounceIn {
+@keyframes backOutUp {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  20% {
+    opacity: 0.7;
+    transform: translateY(0) scale(0.7);
+  }
+
+  100% {
+    opacity: 0.7;
+    transform: translateY(-1200px) scale(0.7);
+  }
+}
+
+@keyframes bounceIn {
   from,
   20%,
   40%,
@@ -1425,39 +1292,7 @@ a {
   }
 }
 
-@keyframes animateBounceInUp {
-  from,
-  60%,
-  75%,
-  90%,
-  to {
-    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-  }
-
-  from {
-    opacity: 0;
-    transform: translate3d(0, 90px, 0) scaleY(1.18);
-  }
-
-  60% {
-    opacity: 1;
-    transform: translate3d(0, -10px, 0) scaleY(0.92);
-  }
-
-  75% {
-    transform: translate3d(0, 5px, 0) scaleY(0.98);
-  }
-
-  90% {
-    transform: translate3d(0, -2px, 0) scaleY(1.02);
-  }
-
-  to {
-    transform: translate3d(0, 0, 0) scaleY(1);
-  }
-}
-
-@keyframes animateBounceOut {
+@keyframes bounceOut {
   20% {
     transform: scale3d(0.9, 0.9, 0.9);
   }
@@ -1474,7 +1309,7 @@ a {
   }
 }
 
-@keyframes animateFlipInX {
+@keyframes flipInX {
   from {
     opacity: 0;
     transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
@@ -1501,7 +1336,34 @@ a {
   }
 }
 
-@keyframes animateFlipOutX {
+@keyframes flipInY {
+  from {
+    opacity: 0;
+    transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+    animation-timing-function: ease-in;
+  }
+
+  40% {
+    transform: perspective(400px) rotate3d(0, 1, 0, -20deg);
+    animation-timing-function: ease-in;
+  }
+
+  60% {
+    opacity: 1;
+    transform: perspective(400px) rotate3d(0, 1, 0, 10deg);
+  }
+
+  80% {
+    transform: perspective(400px) rotate3d(0, 1, 0, -5deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: perspective(400px);
+  }
+}
+
+@keyframes flipOutX {
   from {
     transform: perspective(400px);
   }
@@ -1514,6 +1376,82 @@ a {
   to {
     opacity: 0;
     transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+  }
+}
+
+@keyframes flipOutY {
+  from {
+    transform: perspective(400px);
+  }
+
+  30% {
+    opacity: 1;
+    transform: perspective(400px) rotate3d(0, 1, 0, -15deg);
+  }
+
+  to {
+    opacity: 0;
+    transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+  }
+}
+
+@keyframes rotateIn {
+  from {
+    opacity: 0;
+    transform: rotate3d(0, 0, 1, -200deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes rotateInDownLeft {
+  from {
+    opacity: 0;
+    transform: rotate3d(0, 0, 1, -45deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes rotateInDownRight {
+  from {
+    opacity: 0;
+    transform: rotate3d(0, 0, 1, 45deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes rotateInUpLeft {
+  from {
+    opacity: 0;
+    transform: rotate3d(0, 0, 1, 45deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes rotateInUpRight {
+  from {
+    opacity: 0;
+    transform: rotate3d(0, 0, 1, -90deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
   }
 }
 
