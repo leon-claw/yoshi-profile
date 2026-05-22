@@ -15,10 +15,19 @@ import type { ProfileRendererProps } from "./types";
 
 type SlideDirection = "next" | "prev";
 type SlidePosition = "active" | "next" | "prev" | "far";
+const NAVIGATION_LOCK_MS = 680;
+const TRANSITION_STYLES = ["fade", "zoom", "slide", "back", "bounce", "flip"] as const;
+type TransitionStyle = (typeof TRANSITION_STYLES)[number];
+
 type GalleryPreview = {
   profileId: string;
   index: number;
 };
+
+function getNextTransitionStyle(current: TransitionStyle): TransitionStyle {
+  const currentIndex = TRANSITION_STYLES.indexOf(current);
+  return TRANSITION_STYLES[(currentIndex + 1) % TRANSITION_STYLES.length];
+}
 
 export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }: ProfileRendererProps) {
   const selectedIndex = useMemo(
@@ -26,8 +35,10 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
     [profiles, selected.id],
   );
   const [direction, setDirection] = useState<SlideDirection>("next");
+  const [transitionStyle, setTransitionStyle] = useState<TransitionStyle>("fade");
   const [preview, setPreview] = useState<GalleryPreview | null>(null);
   const previousIndexRef = useRef(selectedIndex);
+  const pendingNavigationRef = useRef<{ direction: SlideDirection; targetId: string } | null>(null);
   const wheelLockRef = useRef(0);
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const previewProfile = useMemo(
@@ -46,7 +57,9 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
         return;
       }
 
+      pendingNavigationRef.current = { direction: nextDirection, targetId: target.id };
       setDirection(nextDirection);
+      setTransitionStyle(getNextTransitionStyle);
       onSelectProfile(target.id);
     },
     [onSelectProfile, profiles, selected.id],
@@ -87,11 +100,21 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
     }
 
     const lastIndex = previousIndexRef.current;
+    const pendingNavigation = pendingNavigationRef.current;
+
+    if (pendingNavigation?.targetId === selected.id) {
+      setDirection(pendingNavigation.direction);
+      pendingNavigationRef.current = null;
+      previousIndexRef.current = selectedIndex;
+      return;
+    }
+
     const movedForward =
       selectedIndex > lastIndex || (lastIndex === profiles.length - 1 && selectedIndex === 0);
     setDirection(movedForward ? "next" : "prev");
+    setTransitionStyle(getNextTransitionStyle);
     previousIndexRef.current = selectedIndex;
-  }, [profiles.length, selectedIndex]);
+  }, [profiles.length, selected.id, selectedIndex]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -157,7 +180,7 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
       return;
     }
 
-    wheelLockRef.current = now + 760;
+    wheelLockRef.current = now + NAVIGATION_LOCK_MS;
 
     if (preview) {
       movePreview(dominantDelta > 0 ? 1 : -1);
@@ -211,6 +234,7 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
     <main
       className="profile-renderer presentation-deck"
       data-direction={direction}
+      data-transition={transitionStyle}
       onTouchEnd={handleTouchEnd}
       onTouchStart={handleTouchStart}
       onWheel={handleWheel}
@@ -218,13 +242,11 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
       <div className="deck-viewport" aria-live="polite">
         {profiles.map((profile, index) => (
           <Slide
-            index={index}
             key={profile.id}
             position={getSlidePosition(index, selectedIndex, profiles.length)}
             profile={profile}
             selected={profile.id === selected.id}
             onPreview={openPreview}
-            total={profiles.length}
           />
         ))}
       </div>
@@ -306,15 +328,13 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
 }
 
 type SlideProps = {
-  index: number;
   position: SlidePosition;
   onPreview: (profileId: string, index: number) => void;
   profile: ProfileRendererProps["selected"];
   selected: boolean;
-  total: number;
 };
 
-function Slide({ index, position, onPreview, profile, selected, total }: SlideProps) {
+function Slide({ position, onPreview, profile, selected }: SlideProps) {
   const featuredSection = profile.sections[0];
 
   return (
@@ -333,9 +353,6 @@ function Slide({ index, position, onPreview, profile, selected, total }: SlidePr
       <div className="slide-bg-grid" aria-hidden="true" />
       <div className="slide-inner">
         <div className="slide-copy">
-          <div className="slide-counter">
-            {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-          </div>
           <h1 id={`deck-slide-title-${profile.id}`}>{profile.name}</h1>
           <p className="slide-subtitle">{profile.displayName}</p>
 
