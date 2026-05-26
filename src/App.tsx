@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { AudioController } from "./components/AudioController";
 import markdownSource from "./content/dolls.md?raw";
 import { parseDollsMarkdown } from "./lib/markdownProfile";
 import { buildProfileHash, parseProfileIdFromHash, resolveProfileId } from "./lib/routing";
@@ -38,6 +39,7 @@ export function App() {
 
   return (
     <div className={`app-shell theme-soft-gallery profile-style-${PROFILE_DESIGN_THEME}`}>
+      <AudioController />
       <ActiveRenderer
         onSelectProfile={handleSelectProfile}
         profiles={collection.profiles}

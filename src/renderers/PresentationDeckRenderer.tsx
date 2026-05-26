@@ -9,6 +9,7 @@ import {
   type TouchEvent,
   type WheelEvent,
 } from "react";
+import { requestInteractionSound } from "../lib/audioEvents";
 import { DollImage } from "./DollImage";
 import { MarkdownBlock } from "./MarkdownBlock";
 import type { ProfileRendererProps } from "./types";
@@ -73,6 +74,7 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
         return;
       }
 
+      requestInteractionSound();
       markExitingProfile(selected.id);
       pendingNavigationRef.current = { direction: nextDirection, targetId: target.id };
       setDirection(nextDirection);
@@ -162,11 +164,13 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
 
         if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(event.key)) {
           event.preventDefault();
+          requestInteractionSound();
           movePreview(1);
         }
 
         if (["ArrowLeft", "ArrowUp", "PageUp"].includes(event.key)) {
           event.preventDefault();
+          requestInteractionSound();
           movePreview(-1);
         }
 
@@ -215,6 +219,7 @@ export function PresentationDeckRenderer({ profiles, selected, onSelectProfile }
     wheelLockRef.current = now + NAVIGATION_LOCK_MS;
 
     if (preview) {
+      requestInteractionSound();
       movePreview(dominantDelta > 0 ? 1 : -1);
       return;
     }
