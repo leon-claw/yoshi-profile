@@ -122,83 +122,6 @@ a {
   margin: 0 auto;
 }
 
-.audio-dock {
-  position: fixed;
-  top: 18px;
-  right: 18px;
-  z-index: 50;
-  display: grid;
-  justify-items: end;
-  gap: 10px;
-  pointer-events: none;
-}
-
-.audio-toggle {
-  position: relative;
-  display: grid;
-  width: 46px;
-  height: 46px;
-  place-items: center;
-  border: 1px solid rgba(23, 32, 51, 0.14);
-  border-radius: 999px;
-  background:
-    linear-gradient(140deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.54)),
-    rgba(255, 255, 255, 0.78);
-  color: #172033;
-  box-shadow: 0 14px 34px rgba(46, 57, 96, 0.18);
-  pointer-events: auto;
-  backdrop-filter: blur(18px);
-  transition:
-    background 220ms ease,
-    color 220ms ease,
-    transform 220ms ease,
-    border-color 220ms ease;
-}
-
-.audio-toggle::after {
-  position: absolute;
-  inset: 7px;
-  content: "";
-  border: 1px solid rgba(32, 215, 210, 0.26);
-  border-radius: inherit;
-}
-
-.audio-toggle:hover,
-.audio-toggle:focus-visible,
-.audio-toggle[data-playing="true"] {
-  border-color: rgba(23, 32, 51, 0.28);
-  background: #172033;
-  color: #ffffff;
-  outline: none;
-  transform: translateY(-1px);
-}
-
-.audio-toggle svg {
-  position: relative;
-  z-index: 1;
-  transform-origin: center;
-}
-
-.audio-toggle[data-playing="true"] svg {
-  animation: audioIconSpin 2.8s linear infinite;
-}
-
-.audio-hint {
-  max-width: 218px;
-  padding: 9px 11px;
-  border: 1px solid rgba(23, 32, 51, 0.12);
-  border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.78);
-  box-shadow: 0 14px 34px rgba(46, 57, 96, 0.15);
-  color: #172033;
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1.45;
-  pointer-events: none;
-  backdrop-filter: blur(18px);
-  animation: audioHintEnter 420ms var(--deck-ease) both;
-}
-
 .presentation-deck {
   --profile-motion-duration: 1000ms;
   --profile-motion-exit-duration: 1000ms;
@@ -1003,20 +926,6 @@ a {
     width: 22px;
   }
 
-  .audio-dock {
-    top: 12px;
-    right: 12px;
-  }
-
-  .audio-toggle {
-    width: 42px;
-    height: 42px;
-  }
-
-  .audio-hint {
-    max-width: min(210px, calc(100vw - 88px));
-    font-size: 11px;
-  }
 }
 
 .presentation-deck[data-transition] {
@@ -1544,24 +1453,6 @@ a {
   to {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes audioIconSpin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes audioHintEnter {
-  from {
-    opacity: 0;
-    transform: translate3d(0, -8px, 0) scale(0.96);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 

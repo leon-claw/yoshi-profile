@@ -1,6 +1,6 @@
 import type { DollProfile } from "./types";
 
-const profileRoutePattern = /^#?\/dolls\/([a-z0-9-]+)$/i;
+const profileRoutePattern = /^#?\/dolls\/([a-z0-9-]+)(?:\/gallery\/\d+)?$/i;
 
 export function parseProfileIdFromHash(hash: string): string | null {
   const normalized = hash.startsWith("#") ? hash.slice(1) : hash;

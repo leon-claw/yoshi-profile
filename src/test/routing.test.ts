@@ -10,6 +10,7 @@ const profiles = [
 describe("routing helpers", () => {
   it("parses profile ids from hash routes", () => {
     expect(parseProfileIdFromHash("#/dolls/mochi")).toBe("mochi");
+    expect(parseProfileIdFromHash("#/dolls/mochi/gallery/2")).toBe("mochi");
     expect(parseProfileIdFromHash("/dolls/pipi")).toBe("pipi");
     expect(parseProfileIdFromHash("#/unknown/mochi")).toBeNull();
   });

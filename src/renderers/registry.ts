@@ -1,13 +1,19 @@
+import { ImpressDeckRenderer } from "./ImpressDeckRenderer";
 import { PresentationDeckRenderer } from "./PresentationDeckRenderer";
 import type { ProfileRenderer } from "./types";
 
 export const renderers = [
   {
+    id: "impress-deck",
+    label: "Impress deck",
+    component: ImpressDeckRenderer,
+  },
+  {
     id: "presentation-deck",
-    label: "幻灯片",
+    label: "Presentation deck",
     component: PresentationDeckRenderer,
   },
-] satisfies ProfileRenderer[];
+] as const satisfies readonly ProfileRenderer[];
 
 export type RendererId = (typeof renderers)[number]["id"];
 

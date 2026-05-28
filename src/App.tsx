@@ -3,12 +3,14 @@ import { AudioController } from "./components/AudioController";
 import markdownSource from "./content/dolls.md?raw";
 import { parseDollsMarkdown } from "./lib/markdownProfile";
 import { buildProfileHash, parseProfileIdFromHash, resolveProfileId } from "./lib/routing";
-import { getRenderer } from "./renderers/registry";
-import { PROFILE_DESIGN_THEME } from "./themeSettings";
+import { usePersistentChoice } from "./lib/usePersistentChoice";
+import { getRenderer, isRendererId } from "./renderers/registry";
+import { PROFILE_DESIGN_THEME, PROFILE_RENDERER_STORAGE_KEY, PROFILE_RENDERER_THEME } from "./themeSettings";
 
 const collection = parseDollsMarkdown(markdownSource);
 
 export function App() {
+  const [rendererId] = usePersistentChoice(PROFILE_RENDERER_STORAGE_KEY, PROFILE_RENDERER_THEME, isRendererId);
   const [selectedId, setSelectedId] = useState(() =>
     resolveProfileId(collection.profiles, parseProfileIdFromHash(window.location.hash)),
   );
@@ -27,7 +29,7 @@ export function App() {
     () => collection.profiles.find((profile) => profile.id === selectedId) ?? collection.profiles[0],
     [selectedId],
   );
-  const ActiveRenderer = getRenderer("presentation-deck").component;
+  const ActiveRenderer = getRenderer(rendererId).component;
 
   useEffect(() => {
     document.title = `${selected.name} - ${collection.title}`;

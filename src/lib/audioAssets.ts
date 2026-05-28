@@ -9,12 +9,6 @@ const soundEffectModules = import.meta.glob("../assets/sound-effect/*.{mp3,wav,o
   query: "?url",
 }) as Record<string, string>;
 
-const bgmModules = import.meta.glob("../assets/bgm/*.{mp3,wav,ogg,m4a}", {
-  eager: true,
-  import: "default",
-  query: "?url",
-}) as Record<string, string>;
-
 function normalizeAssetName(path: string): string {
   return path
     .split("/")
@@ -33,4 +27,3 @@ function toSortedAudioAssets(modules: Record<string, string>): AudioAsset[] {
 }
 
 export const soundEffectTracks = toSortedAudioAssets(soundEffectModules);
-export const bgmTracks = toSortedAudioAssets(bgmModules);
